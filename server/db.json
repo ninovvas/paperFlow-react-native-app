@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "email": "demo@paperflow.com",
+      "password": "$2b$10$trE5kWdvHBzmr12qNGh7beFln78P6a8JDPUC4EqUZesqTFO3yDnea",
+      "displayName": "Demo User",
+      "id": 1
+    }
+  ],
+  "filters": [],
+  "favorites": []
+}

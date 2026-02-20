@@ -16,7 +16,7 @@ function AuthTest() {
             {error && <Text style={styles.error}>{error}</Text>}
             {isAuthenticated
                 ? <Button title="Logout" variant="danger" onPress={logout} style={{ marginTop: 16 }} />
-                : <Button title="Test Login (start server first)" loading={isLoading}
+                : <Button title="Test Login" loading={isLoading}
                     onPress={() => login('demo@paperflow.com', 'Demo123')} style={{ marginTop: 16 }} />
             }
         </View>
