@@ -1,0 +1,1 @@
+export const AUTH_MODE = 'json-server'; // Change to 'firebase' to use Firebase Auth

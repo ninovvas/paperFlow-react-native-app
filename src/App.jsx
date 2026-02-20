@@ -1,32 +1,40 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { AuthProvider } from './contexts/auth/AuthProvider';
+import { useAuth } from './contexts/auth/useAuth';
 import Button from './components/Button';
-import Input from './components/Input';
-import EmptyState from './components/EmptyState';
-import { useState } from 'react';
 
-export default function App() {
-    const [text, setText] = useState('');
+function AuthTest() {
+    const { isAuthenticated, user, login, logout, isLoading, error } = useAuth();
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
             <StatusBar style="auto" />
             <Text style={styles.title}>PaperFlow</Text>
-            <Text style={styles.subtitle}>Component Preview</Text>
-            <View style={styles.section}>
-                <Input label="Test Input" placeholder="Type something..." value={text} onChangeText={setText} />
-                <Button title="Primary Button" onPress={() => {}} style={{ marginTop: 12 }} />
-                <Button title="Secondary" variant="secondary" onPress={() => {}} style={{ marginTop: 8 }} />
-                <Button title="Outline" variant="outline" onPress={() => {}} style={{ marginTop: 8 }} />
-            </View>
-            <EmptyState icon="newspaper-outline" title="No papers yet" message="Components are ready!" />
-        </ScrollView>
+            <Text style={styles.status}>
+                {isAuthenticated ? `Logged in as ${user?.email}` : 'Not logged in'}
+            </Text>
+            {error && <Text style={styles.error}>{error}</Text>}
+            {isAuthenticated
+                ? <Button title="Logout" variant="danger" onPress={logout} style={{ marginTop: 16 }} />
+                : <Button title="Test Login (start server first)" loading={isLoading}
+                    onPress={() => login('demo@paperflow.com', 'Demo123')} style={{ marginTop: 16 }} />
+            }
+        </View>
+    );
+}
+
+export default function App() {
+    return (
+        <AuthProvider>
+            <AuthTest />
+        </AuthProvider>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flexGrow: 1, padding: 24, paddingTop: 60, backgroundColor: '#f8fafc' },
-    title: { fontSize: 28, fontWeight: '800', color: '#1B4F72', textAlign: 'center' },
-    subtitle: { fontSize: 14, color: '#64748b', textAlign: 'center', marginBottom: 24 },
-    section: { marginBottom: 24 },
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8fafc', padding: 24 },
+    title: { fontSize: 28, fontWeight: '800', color: '#1B4F72' },
+    subtitle: { fontSize: 14, color: '#64748b', marginTop: 4, marginBottom: 24 },
+    status: { fontSize: 16, color: '#1e293b', fontWeight: '500' },
+    error: { fontSize: 14, color: '#ef4444', marginTop: 8 },
 });
-
