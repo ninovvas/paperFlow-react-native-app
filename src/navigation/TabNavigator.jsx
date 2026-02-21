@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import FeedNavigator from "./FeedNavigator.jsx";
 import SearchNavigator from "./SearchNavigator.jsx";
 import FiltersNavigator from "./FiltersNavigator.jsx";
+import FavoritesNavigator from "./FavoritesNavigator.jsx";
 
 export default function TabNavigator() {
     const Tabs = createBottomTabNavigator();
@@ -44,7 +45,7 @@ export default function TabNavigator() {
 
             <Tabs.Screen
                 name="FavoritesTab"
-                component={()=> {}}
+                component={FavoritesNavigator}
                 options={{
                     title: "Favorites",
                     tabBarIcon: ({ color, size }) => <Ionicons name="heart" size={size} color={color} />,
