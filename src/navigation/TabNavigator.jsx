@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
+import FeedNavigator from "./FeedNavigator.jsx";
+
 
 export default function TabNavigator() {
     const Tabs = createBottomTabNavigator();
@@ -14,7 +16,7 @@ export default function TabNavigator() {
         >
             <Tabs.Screen
                 name="FeedTab"
-                component={()=> {}}
+                component={FeedNavigator}
                 options={{
                     title: "Feed",
                     tabBarIcon: ({ color, size }) => <Ionicons name="newspaper" size={size} color={color} />,
