@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import FeedNavigator from "./FeedNavigator.jsx";
 import SearchNavigator from "./SearchNavigator.jsx";
+import FiltersNavigator from "./FiltersNavigator.jsx";
 
 export default function TabNavigator() {
     const Tabs = createBottomTabNavigator();
@@ -34,7 +35,7 @@ export default function TabNavigator() {
 
             <Tabs.Screen
                 name="FiltersTab"
-                component={()=> {}}
+                component={FiltersNavigator}
                 options={{
                     title: "Filters",
                     tabBarIcon: ({ color, size }) => <Ionicons name="filter" size={size} color={color} />,
