@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import FeedNavigator from "./FeedNavigator.jsx";
-
+import SearchNavigator from "./SearchNavigator.jsx";
 
 export default function TabNavigator() {
     const Tabs = createBottomTabNavigator();
@@ -25,7 +25,7 @@ export default function TabNavigator() {
 
             <Tabs.Screen
                 name="SearchTab"
-                component={()=> {}}
+                component={SearchNavigator}
                 options={{
                     title: "Search",
                     tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
