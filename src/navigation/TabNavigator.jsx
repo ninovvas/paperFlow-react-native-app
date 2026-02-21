@@ -5,6 +5,7 @@ import FeedNavigator from "./FeedNavigator.jsx";
 import SearchNavigator from "./SearchNavigator.jsx";
 import FiltersNavigator from "./FiltersNavigator.jsx";
 import FavoritesNavigator from "./FavoritesNavigator.jsx";
+import ProfileNavigator from "./ProfileNavigator.jsx";
 
 export default function TabNavigator() {
     const Tabs = createBottomTabNavigator();
@@ -54,7 +55,7 @@ export default function TabNavigator() {
 
             <Tabs.Screen
                 name="ProfileTab"
-                component={()=> {}}
+                component={ProfileNavigator}
                 options={{
                     title: "Profile",
                     tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
