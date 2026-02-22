@@ -7,6 +7,28 @@
       "id": 1
     }
   ],
-  "filters": [],
+  "filters": [
+    {
+      "name": "mobile robot arXiv",
+      "keywords": [
+        "mobile robot",
+        "reinforcement learning",
+        "navigation"
+      ],
+      "categories": [
+        "cs.RO",
+        "stat.ML",
+        "cs.AI"
+      ],
+      "source": "arxiv",
+      "isActive": true,
+      "maxResults": 25,
+      "dateFrom": null,
+      "dateUntil": null,
+      "userId": 1,
+      "createdAt": "2026-02-22T21:19:56.608Z",
+      "id": 1
+    }
+  ],
   "favorites": []
 }
