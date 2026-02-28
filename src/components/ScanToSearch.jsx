@@ -16,7 +16,7 @@ import {
 } from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import Button from './Button';
-import { spaceImageApi } from "./api.js";
+import { spaceImageApi } from "./../api/api";
 
 
 
