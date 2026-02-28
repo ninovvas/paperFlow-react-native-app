@@ -74,7 +74,7 @@ export default function ScanToSearch({ onSearch, style = {} }) {
             formData.append('isOverlayRequired', 'false');
             formData.append('OCREngine', '2'); // Engine 2 is better for photos
 
-            const response = await fetch(spaceImageApi, {
+            const response = await fetch('https://api.ocr.space/parse/image', {
                 method: 'POST',
                 headers: {
                     apikey: 'helloworld', // Free demo key from OCR.space

@@ -190,6 +190,21 @@ export async function fetchFeedPapers(filters, maxResults = 25) {
  * Quick search by simple keyword string (for Search tab)
  */
 export async function quickSearch(keyword, start = 0, maxResults = 25) {
-    const query = `all:${keyword.trim().replace(/\s+/g, '+')}`;
-    return searchPapers(query, { start, maxResults });
+    const trimmed = keyword.trim();
+
+    // If query looks like a full title (4+ words), search in title field for precision
+    const words = trimmed.split(/\s+/);
+    let query;
+
+    if (words.length >= 4) {
+        // Long query = likely a paper title - search in title for exact match
+        const encoded = trimmed.replace(/\s+/g, '+');
+        query = `ti:${encoded}`;
+    } else {
+        // Short query = keywords → search all fields
+        const encoded = trimmed.replace(/\s+/g, '+');
+        query = `all:${encoded}`;
+    }
+
+    return searchPapers(query, { start, maxResults, sortBy: 'relevance', sortOrder: 'descending' });
 }

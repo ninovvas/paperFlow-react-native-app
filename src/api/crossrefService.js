@@ -1,10 +1,6 @@
 import { crossrefApi } from "./api.js";
 
-/**
- * Search Crossref API for academic papers
- * Docs: https://api.crossref.org/swagger-ui/index.html
- * Free, no auth needed, rate limit ~50 req/sec (polite pool with mailto)
- */
+
 export async function searchPapers(query, options = {}) {
     const {
         rows = 25,
@@ -16,12 +12,12 @@ export async function searchPapers(query, options = {}) {
     } = options;
 
     const params = {
-        query,
+        'query.bibliographic': query,  
         rows,
         offset,
         sort,
         order,
-        mailto: 'paperflow@example.com', // Polite pool
+        mailto: 'paperflow@example.com',
     };
 
     // Date filter
@@ -34,12 +30,12 @@ export async function searchPapers(query, options = {}) {
         params['filter'] = `until-pub-date:${untilDate}`;
     }
 
-    console.log(`Crossref search: query="${query}" rows=${rows} offset=${offset}`);
+    console.log(`🔬 Crossref search: query="${query}" rows=${rows} offset=${offset}`);
 
     const result = await crossrefApi.get('/works', { params });
     const data = result.data?.message;
 
-    console.log(`Crossref: ${data?.items?.length || 0} results (total: ${data?.['total-results'] || 0})`);
+    console.log(`📊 Crossref: ${data?.items?.length || 0} results (total: ${data?.['total-results'] || 0})`);
 
     const papers = (data?.items || []).map(normalizeCrossrefItem);
 
@@ -58,7 +54,7 @@ function normalizeCrossrefItem(item) {
         `${a.given || ''} ${a.family || ''}`.trim()
     );
 
-    // Extract date - Crossref uses 'issued' for publication date, 'published' or 'created' as fallbacks
+    
     const dateParts = item.issued?.['date-parts']?.[0]
         || item.published?.['date-parts']?.[0]
         || item['published-print']?.['date-parts']?.[0]
