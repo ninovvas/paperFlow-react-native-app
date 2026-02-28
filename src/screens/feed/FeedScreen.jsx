@@ -129,7 +129,11 @@ export default function FeedScreen({ navigation }) {
     );
 
     if (isLoading) {
-        return <View style={[styles.centerContainer, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color="#1B4F72" /><Text style={styles.loadingText}>Loading papers...</Text></View>;
+        return (
+            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+                <ActivityIndicator size="large" color="#1B4F72" />
+                <Text style={styles.loadingText}>Loading papers...</Text>
+            </View>);
     }
 
     if (error) {
@@ -151,10 +155,37 @@ export default function FeedScreen({ navigation }) {
                 contentContainerStyle={papers.length === 0 ? styles.emptyList : styles.list}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor="#1B4F72" colors={['#1B4F72']} />}
                 ListEmptyComponent={
-                    <EmptyState icon="newspaper-outline" title="No papers yet"
-                        message="Create your first filter to start receiving personalized paper recommendations from arXiv and Crossref."
-                        actionTitle="Create Filter"
-                        onAction={() => navigation.navigate('FiltersTab', { screen: 'CreateFilter' })} />
+                    filters.length > 0 && activeFilters.length === 0 ? (
+                        <View style={styles.inactiveInfo}>
+                            <Ionicons name="filter-outline" size={48} color="#94a3b8" />
+                            <Text style={styles.inactiveTitle}>No active filters</Text>
+                            <Text style={styles.inactiveMessage}>
+                                You have {filters.length} filter{filters.length !== 1 ? 's' : ''} but none are activated.
+                                Activate a filter or create a new one to see papers.
+                            </Text>
+                            <View style={styles.inactiveButtons}>
+                                <TouchableOpacity
+                                    style={styles.activateButton}
+                                    onPress={() => navigation.navigate('FiltersTab', { screen: 'FilterList' })}
+                                >
+                                    <Ionicons name="toggle-outline" size={18} color="#1B4F72" />
+                                    <Text style={styles.activateText}>Manage Filters</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.createButton}
+                                    onPress={() => navigation.navigate('FiltersTab', { screen: 'CreateFilter' })}
+                                >
+                                    <Ionicons name="add" size={18} color="#fff" />
+                                    <Text style={styles.createText}>New Filter</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    ) : (
+                        <EmptyState icon="newspaper-outline" title="No papers yet"
+                            message="Create your first filter to start receiving personalized paper recommendations from arXiv and Crossref."
+                            actionTitle="Create Filter"
+                            onAction={() => navigation.navigate('FiltersTab', { screen: 'CreateFilter' })} />
+                    )
                 }
                 ListHeaderComponent={
                     activeFilters.length > 0 ? (
@@ -206,4 +237,12 @@ const styles = StyleSheet.create({
     chip: { backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: '#e2e8f0', flexDirection: 'row', gap: 4, alignItems: 'center' },
     chipText: { fontSize: 12, color: '#475569', fontWeight: '500' },
     chipSource: { fontSize: 10, color: '#94a3b8' },
+    inactiveInfo: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32, paddingBottom: 80 },
+    inactiveTitle: { fontSize: 20, fontWeight: '700', color: '#1e293b', marginTop: 16 },
+    inactiveMessage: { fontSize: 14, color: '#64748b', textAlign: 'center', marginTop: 8, lineHeight: 20 },
+    inactiveButtons: { flexDirection: 'row', gap: 12, marginTop: 24 },
+    activateButton: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#D6EAF8', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10 },
+    activateText: { fontSize: 14, color: '#1B4F72', fontWeight: '600' },
+    createButton: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#1B4F72', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10 },
+    createText: { fontSize: 14, color: '#fff', fontWeight: '600' },
 });
