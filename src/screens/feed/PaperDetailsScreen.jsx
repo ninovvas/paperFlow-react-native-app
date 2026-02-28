@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Button';
 import * as arxivService from '../../api/arxivService.js';
 import { useFavorites } from '../../contexts/papers/useFavorites.js';
+import { useTheme } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -26,6 +27,9 @@ const PaperDetailsScreen = ({ route, navigation }) => {
     const { isFavorite, addFavorite, getFavoriteByPaperId, removeFavorite } = useFavorites();
 
     const isBookmarked = paper ? isFavorite(paper.id) : false;
+
+    const { colors } = useTheme();
+
 
     useEffect(() => {
         if (passedPaper) return;
@@ -108,7 +112,7 @@ const PaperDetailsScreen = ({ route, navigation }) => {
 
     if (isLoading) {
         return (
-            <View style={styles.centerContainer}>
+            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
                 <ActivityIndicator size="large" color="#1B4F72" />
                 <Text style={styles.loadingText}>Loading paper details...</Text>
             </View>
@@ -117,7 +121,7 @@ const PaperDetailsScreen = ({ route, navigation }) => {
 
     if (error || !paper) {
         return (
-            <View style={styles.centerContainer}>
+            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
                 <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
                 <Text style={styles.errorText}>{error || 'Paper not found.'}</Text>
             </View>
@@ -133,7 +137,7 @@ const PaperDetailsScreen = ({ route, navigation }) => {
         : 'Unknown date';
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
             {/* Source Badge Header */}
             <View style={styles.sourceHeader}>
                 <View style={[

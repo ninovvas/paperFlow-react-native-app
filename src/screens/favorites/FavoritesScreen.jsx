@@ -3,9 +3,11 @@ import { Ionicons } from '@expo/vector-icons';
 import PaperCard from '../../components/PaperCard';
 import EmptyState from '../../components/EmptyState';
 import { useFavorites } from '../../contexts/papers/useFavorites.js';
+import { useTheme } from '@react-navigation/native';
 
 export default function FavoritesScreen({ navigation }) {
     const { favorites, isLoading, removeFavorite } = useFavorites();
+    const { colors } = useTheme();
 
     const handlePress = (fav) => {
         navigation.navigate('PaperDetails', {
@@ -35,11 +37,11 @@ export default function FavoritesScreen({ navigation }) {
     };
 
     if (isLoading) {
-        return <View style={styles.centerContainer}><ActivityIndicator size="large" color="#1B4F72" /></View>;
+        return <View style={[styles.centerContainer, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color="#1B4F72" /></View>;
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <FlatList
                 data={favorites} keyExtractor={(item) => String(item.id)}
                 renderItem={({ item }) => (

@@ -19,6 +19,8 @@ import { useFavorites } from '../../contexts/papers/useFavorites.js';
 import * as arxivService from '../../api/arxivService.js';
 import * as crossrefService from '../../api/crossrefService.js';
 
+import { useTheme } from '@react-navigation/native';
+
 export default function SearchScreen({ navigation }) {
     const [query, setQuery] = useState('');
     const [papers, setPapers] = useState([]);
@@ -27,6 +29,7 @@ export default function SearchScreen({ navigation }) {
     const [totalResults, setTotalResults] = useState(0);
     const [searchSource, setSearchSource] = useState('all'); // 'all', 'arxiv', 'crossref'
     const { isFavorite, addFavorite, getFavoriteByPaperId, removeFavorite } = useFavorites();
+    const { colors } = useTheme();
 
     const executeSearch = useCallback(async (searchQuery) => {
         const trimmed = searchQuery.trim();
@@ -113,12 +116,12 @@ export default function SearchScreen({ navigation }) {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            sstyle={[styles.container, { backgroundColor: colors.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
             {/* Search Bar */}
-            <View style={styles.searchBar}>
+            <View style={[styles.searchBar]}>
                 <View style={styles.inputContainer}>
                     <Ionicons name="search" size={20} color="#94a3b8" />
                     <TextInput
@@ -164,7 +167,7 @@ export default function SearchScreen({ navigation }) {
 
             {/* Results */}
             {isLoading ? (
-                <View style={styles.centerContainer}>
+                <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
                     <ActivityIndicator size="large" color="#1B4F72" />
                     <Text style={styles.loadingText}>Searching...</Text>
                 </View>

@@ -9,8 +9,10 @@ import { useFilters } from '../../contexts/filters/useFilters.js';
 import { useFavorites } from '../../contexts/papers/useFavorites.js';
 import * as arxivService from '../../api/arxivService.js';
 import * as crossrefService from '../../api/crossrefService.js';
+import { useTheme } from '@react-navigation/native';
 
 export default function FeedScreen({ navigation }) {
+    const { colors } = useTheme();
     const { auth } = useAuth();
     const { filters } = useFilters();
     const { isFavorite, addFavorite, getFavoriteByPaperId, removeFavorite } = useFavorites();
@@ -127,12 +129,12 @@ export default function FeedScreen({ navigation }) {
     );
 
     if (isLoading) {
-        return <View style={styles.centerContainer}><ActivityIndicator size="large" color="#1B4F72" /><Text style={styles.loadingText}>Loading papers...</Text></View>;
+        return <View style={[styles.centerContainer, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color="#1B4F72" /><Text style={styles.loadingText}>Loading papers...</Text></View>;
     }
 
     if (error) {
         return (
-            <View style={styles.centerContainer}>
+            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
                 <Ionicons name="cloud-offline-outline" size={48} color="#ef4444" />
                 <Text style={styles.errorText}>{error}</Text>
                 <TouchableOpacity style={styles.retryButton} onPress={() => fetchPapers()}>
@@ -143,7 +145,7 @@ export default function FeedScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <FlatList
                 data={papers} renderItem={renderPaper} keyExtractor={(item) => item.id}
                 contentContainerStyle={papers.length === 0 ? styles.emptyList : styles.list}

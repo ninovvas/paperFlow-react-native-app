@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
 
 import FeedNavigator from "./FeedNavigator.jsx";
 import SearchNavigator from "./SearchNavigator.jsx";
@@ -9,12 +10,15 @@ import ProfileNavigator from "./ProfileNavigator.jsx";
 
 export default function TabNavigator() {
     const Tabs = createBottomTabNavigator();
+    const { colors } = useTheme();
 
     return (
         <Tabs.Navigator
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: '#1B4F72',
+                tabBarActiveTintColor: colors.primary,
+                tabBarInactiveTintColor: colors.text,
+                tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border },
             }}
         >
             <Tabs.Screen

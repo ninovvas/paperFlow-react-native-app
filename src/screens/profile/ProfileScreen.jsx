@@ -7,12 +7,14 @@ import { useAuth } from '../../contexts/auth/useAuth.js';
 import { useFilters } from '../../contexts/filters/useFilters.js';
 import { useFavorites } from '../../contexts/papers/useFavorites.js';
 import { api } from '../../api/api.js';
+import { useTheme } from '@react-navigation/native';
 
 export default function ProfileScreen({ navigation }) {
     const { user, auth, logout } = useAuth();
     const { filters } = useFilters();
     const { favorites } = useFavorites();
     const [profileImage, setProfileImage] = useState(null);
+    const { colors } = useTheme();
 
     const handlePickImage = () => {
         Alert.alert('Profile Photo', 'Choose an option', [
@@ -68,7 +70,7 @@ export default function ProfileScreen({ navigation }) {
     };
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
                 <View style={styles.profileHeader}>
                     <TouchableOpacity style={styles.avatarContainer} onPress={handlePickImage} activeOpacity={0.7}>

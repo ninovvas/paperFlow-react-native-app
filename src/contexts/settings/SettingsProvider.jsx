@@ -50,5 +50,11 @@ export function SettingsProvider({ children }) {
 }
 
 export function useSettings() {
-    return useContext(SettingsContext);
+    const context = useContext(SettingsContext);
+
+    if (!context) {
+        throw new Error("useSettings must be used within a SettingsProvider");
+    }
+
+    return context;
 }

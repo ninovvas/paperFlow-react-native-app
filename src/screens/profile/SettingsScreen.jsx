@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Switch, ScrollView, Alert } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { useSettings } from '../../contexts/settings/SettingsProvider.jsx';
 import { useFavorites } from '../../contexts/papers/useFavorites.js';
 import { useFilters } from '../../contexts/filters/useFilters.js';
@@ -9,12 +10,6 @@ export default function SettingsScreen() {
     const { settings, updateSetting } = useSettings();
     const { favorites, removeFavorite } = useFavorites();
     const { filters, deleteFilter } = useFilters();
-
-    const bg = settings.darkMode ? '#0f172a' : '#f8fafc';
-    const cardBg = settings.darkMode ? '#1e293b' : '#fff';
-    const textColor = settings.darkMode ? '#e2e8f0' : '#1e293b';
-    const hintColor = settings.darkMode ? '#64748b' : '#94a3b8';
-    const sectionColor = settings.darkMode ? '#64748b' : '#94a3b8';
 
     const handleClearFavorites = () => {
         if (favorites.length === 0) {
@@ -64,16 +59,18 @@ export default function SettingsScreen() {
         );
     };
 
-   
+    const { colors, dark } = useTheme();
+    const hintColor = dark ? '#64748b' : '#94a3b8';
+    const sectionColor = dark ? '#64748b' : '#94a3b8';
 
     return (
-        <ScrollView style={[styles.container, { backgroundColor: bg }]} showsVerticalScrollIndicator={false}>
+        <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
                 <Text style={[styles.sectionTitle, { color: sectionColor }]}>Appearance</Text>
-                <View style={[styles.settingsGroup, { backgroundColor: cardBg }]}>
+                <View style={[styles.settingsGroup, { backgroundColor: colors.card }]}>
                     <View style={styles.settingRow}>
                         <View>
-                            <Text style={[styles.settingLabel, { color: textColor }]}>Dark Mode</Text>
+                            <Text style={[styles.settingLabel, { color: colors.text }]}>Dark Mode</Text>
                             <Text style={[styles.settingHint, { color: hintColor }]}>Use dark color scheme</Text>
                         </View>
                         <Switch
@@ -85,7 +82,7 @@ export default function SettingsScreen() {
                     </View>
                     <View style={styles.settingRow}>
                         <View>
-                            <Text style={[styles.settingLabel, { color: textColor }]}>Compact Cards</Text>
+                            <Text style={[styles.settingLabel, { color: colors.text }]}>Compact Cards</Text>
                             <Text style={[styles.settingHint, { color: hintColor }]}>Show smaller paper cards in feed</Text>
                         </View>
                         <Switch
@@ -98,10 +95,10 @@ export default function SettingsScreen() {
                 </View>
 
                 <Text style={[styles.sectionTitle, { color: sectionColor }]}>Notifications</Text>
-                <View style={[styles.settingsGroup, { backgroundColor: cardBg }]}>
+                <View style={[styles.settingsGroup, { backgroundColor: colors.card }]}>
                     <View style={styles.settingRow}>
                         <View>
-                            <Text style={[styles.settingLabel, { color: textColor }]}>Push Notifications</Text>
+                            <Text style={[styles.settingLabel, { color: colors.text }]}>Push Notifications</Text>
                             <Text style={[styles.settingHint, { color: hintColor }]}>Get notified about new papers</Text>
                         </View>
                         <Switch
@@ -114,10 +111,10 @@ export default function SettingsScreen() {
                 </View>
 
                 <Text style={[styles.sectionTitle, { color: sectionColor }]}>Data Management</Text>
-                <View style={[styles.settingsGroup, { backgroundColor: cardBg }]}>
+                <View style={[styles.settingsGroup, { backgroundColor: colors.card }]}>
                     <View style={styles.settingRow}>
                         <View style={{ flex: 1 }}>
-                            <Text style={[styles.settingLabel, { color: textColor }]}>Saved Papers</Text>
+                            <Text style={[styles.settingLabel, { color: colors.text }]}>Saved Papers</Text>
                             <Text style={[styles.settingHint, { color: hintColor }]}>{favorites.length} papers saved</Text>
                         </View>
                         <Button title="Clear" variant="danger" size="small" onPress={handleClearFavorites}
@@ -125,7 +122,7 @@ export default function SettingsScreen() {
                     </View>
                     <View style={styles.settingRow}>
                         <View style={{ flex: 1 }}>
-                            <Text style={[styles.settingLabel, { color: textColor }]}>Filters</Text>
+                            <Text style={[styles.settingLabel, { color: colors.text }]}>Filters</Text>
                             <Text style={[styles.settingHint, { color: hintColor }]}>{filters.length} filters created</Text>
                         </View>
                         <Button title="Clear" variant="danger" size="small" onPress={handleClearFilters}

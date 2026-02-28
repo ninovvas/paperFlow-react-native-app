@@ -7,6 +7,7 @@ import Button from '../../components/Button';
 import DatePickerField from '../../components/DatePickerField';
 import { useFilters } from '../../contexts/filters/useFilters.js';
 import { ARXIV_CATEGORIES } from '../../utils/categories.js';
+import { useTheme } from '@react-navigation/native';
 
 const MAX_RESULTS_OPTIONS = [10, 25, 50, 100];
 
@@ -15,6 +16,7 @@ export default function CreateFilterScreen({ navigation }) {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showCategories, setShowCategories] = useState(false);
+    const { colors } = useTheme();
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: { name: '', keywords: '', source: 'arxiv', isActive: true, maxResults: '25', dateFrom: '', dateUntil: '' },
@@ -33,7 +35,7 @@ export default function CreateFilterScreen({ navigation }) {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
+        <KeyboardAvoidingView style={[styles.container, { backgroundColor: colors.background }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
             <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Filter Details</Text>

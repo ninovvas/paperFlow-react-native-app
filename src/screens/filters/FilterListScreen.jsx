@@ -11,9 +11,11 @@ import { Ionicons } from '@expo/vector-icons';
 import FilterCard from '../../components/FilterCard';
 import EmptyState from '../../components/EmptyState';
 import { useFilters } from '../../contexts/filters/useFilters.js';
+import { useTheme } from '@react-navigation/native';
 
 export default function FilterListScreen({ navigation }) {
     const { filters, isLoading, deleteFilter, updateFilter } = useFilters();
+    const { colors } = useTheme();
 
     const handleDelete = (filter) => {
         Alert.alert(
@@ -63,14 +65,14 @@ export default function FilterListScreen({ navigation }) {
 
     if (isLoading) {
         return (
-            <View style={styles.centerContainer}>
+            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
                 <ActivityIndicator size="large" color="#1B4F72" />
             </View>
         );
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <FlatList
                 data={filters}
                 keyExtractor={(item) => String(item.id)}
