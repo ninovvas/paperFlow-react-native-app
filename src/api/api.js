@@ -70,3 +70,9 @@ export const crossrefApi = axios.create({
         'Content-Type': 'application/json',
     },
 });
+
+// SpaceImageApi fo scanning the images
+export const spaceImageApi = axios.create({
+    baseURL: process.env.EXPO_PUBLIC_SPACE_IMAGE_API || 'https://api.ocr.space/parse/image',
+    timeout: 15000,
+});
