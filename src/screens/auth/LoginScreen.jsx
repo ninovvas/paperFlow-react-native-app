@@ -103,6 +103,8 @@ const LoginScreen = ({ navigation }) => {
                             placeholder="Enter your password"
                             secureTextEntry
                             error={errors.password}
+                            returnKeyType="go"
+                            onSubmitEditing={handleLogin}
                         />
 
                         <Button

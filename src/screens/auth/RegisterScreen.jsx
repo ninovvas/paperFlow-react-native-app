@@ -141,6 +141,8 @@ export default function RegisterScreen({ navigation }) {
                             placeholder="Confirm your password"
                             secureTextEntry
                             error={errors.confirmPassword}
+                            returnKeyType="go"
+                            onSubmitEditing={handleRegister}
                         />
 
                         <Button
