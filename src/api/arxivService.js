@@ -2,7 +2,7 @@ import { arxivApi } from "./api.js";
 import { parseArxivResponse } from "../utils/xmlParser.js";
 
 // arXiv rate limit: they require at least 3 seconds between calls
-// Using 4 seconds to be safe and avoid 429 errors
+// We use 4 seconds to be safe and avoid 429 errors
 let lastCallTimestamp = 0;
 const RATE_LIMIT_MS = 4000;
 const MAX_RETRIES = 2;
@@ -159,14 +159,46 @@ export async function fetchFeedPapers(filters, maxResults = 25) {
         console.log(`Query: ${query}`);
 
         try {
+            // Request more results than needed so we have enough after category filtering
+            const fetchMax = maxResults * 3;
             const { papers } = await searchPapers(query, {
-                maxResults,
+                maxResults: fetchMax,
                 sortBy: 'submittedDate',
                 sortOrder: 'descending',
             });
 
-            console.log(`Got ${papers.length} papers`);
-            allPapers.push(...papers);
+            console.log(`
+                Got ${papers.length} papers before filtering`);
+
+            // ── Client-side category filter ──
+            // arXiv search with cat: is a hint, not strict enforcement
+            // We filter results to only include papers matching selected categories
+            let filtered = papers;
+            const filterCategories = filter.categories || [];
+
+            if (filterCategories.length > 0) {
+                filtered = filtered.filter((paper) => {
+                    const paperCats = paper.categories || [];
+                    const primaryCat = paper.primaryCategory || '';
+                    // Check if any paper category matches any filter category
+                    return filterCategories.some((fc) =>
+                        primaryCat === fc ||
+                        primaryCat.startsWith(fc + '.') ||
+                        paperCats.includes(fc) ||
+                        paperCats.some((pc) => pc.startsWith(fc + '.') || fc.startsWith(pc))
+                    );
+                });
+                console.log(`After category filter: ${filtered.length} papers (categories: ${filterCategories.join(', ')})`);
+            }
+
+            // NOTE: Date range filtering is handled by Crossref (server-side) but NOT by arXiv.
+            // arXiv API does not support date range queries and always returns newest papers first.
+            // Fetching older papers would require paginating through thousands of results.
+
+            // Limit to requested maxResults
+            const limited = filtered.slice(0, maxResults);
+            console.log(`Final: ${limited.length} papers`);
+            allPapers.push(...limited);
         } catch (err) {
             console.error(`Error for "${filter.name}":`, err.message);
         }
@@ -188,6 +220,7 @@ export async function fetchFeedPapers(filters, maxResults = 25) {
 
 /**
  * Quick search by simple keyword string (for Search tab)
+ * Uses ti: (title) + all: (all fields) for better relevance
  */
 export async function quickSearch(keyword, start = 0, maxResults = 25) {
     const trimmed = keyword.trim();
@@ -197,7 +230,7 @@ export async function quickSearch(keyword, start = 0, maxResults = 25) {
     let query;
 
     if (words.length >= 4) {
-        // Long query = likely a paper title - search in title for exact match
+        // Long query = likely a paper title → search in title for exact match
         const encoded = trimmed.replace(/\s+/g, '+');
         query = `ti:${encoded}`;
     } else {

@@ -30,12 +30,12 @@ export async function searchPapers(query, options = {}) {
         params['filter'] = `until-pub-date:${untilDate}`;
     }
 
-    console.log(`🔬 Crossref search: query="${query}" rows=${rows} offset=${offset}`);
+    console.log(`Crossref search: query="${query}" rows=${rows} offset=${offset}`);
 
     const result = await crossrefApi.get('/works', { params });
     const data = result.data?.message;
 
-    console.log(`📊 Crossref: ${data?.items?.length || 0} results (total: ${data?.['total-results'] || 0})`);
+    console.log(`Crossref: ${data?.items?.length || 0} results (total: ${data?.['total-results'] || 0})`);
 
     const papers = (data?.items || []).map(normalizeCrossrefItem);
 

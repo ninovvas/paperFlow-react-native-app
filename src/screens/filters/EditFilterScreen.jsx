@@ -12,13 +12,13 @@ import { useTheme } from '@react-navigation/native';
 const MAX_RESULTS_OPTIONS = [10, 25, 50, 100];
 
 export default function EditFilterScreen({ route, navigation }) {
+    const { colors } = useTheme();
     const { filterId } = route.params;
     const { getFilterById, updateFilter, deleteFilter } = useFilters();
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showCategories, setShowCategories] = useState(false);
     const filter = getFilterById(filterId);
-    const { colors } = useTheme();
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
         defaultValues: { name: '', keywords: '', source: 'arxiv', isActive: true, maxResults: '25', dateFrom: '', dateUntil: '' },
@@ -79,6 +79,7 @@ export default function EditFilterScreen({ route, navigation }) {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Date Range (Optional)</Text>
+                    <Text style={styles.sectionHint}>Only applies to Crossref. arXiv always shows newest papers.</Text>
                     <View style={styles.dateRow}>
                         <Controller control={control} name="dateFrom" render={({ field: { onChange, value } }) => (
                             <DatePickerField label="From" value={value || null} onChange={(d) => onChange(d || '')} placeholder="Start date" />)} />
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f8fafc' }, center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     content: { padding: 20, paddingBottom: 40 }, section: { marginBottom: 24 },
     sectionTitle: { fontSize: 18, fontWeight: '600', color: '#1e293b', marginBottom: 16 },
+    sectionHint: { fontSize: 12, color: '#94a3b8', marginTop: -12, marginBottom: 12 },
     sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
     hint: { fontSize: 12, color: '#94a3b8', marginTop: -8 },
     sourceRow: { flexDirection: 'row', gap: 8 },

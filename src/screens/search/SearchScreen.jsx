@@ -18,10 +18,10 @@ import ScanToSearch from '../../components/ScanToSearch';
 import { useFavorites } from '../../contexts/papers/useFavorites.js';
 import * as arxivService from '../../api/arxivService.js';
 import * as crossrefService from '../../api/crossrefService.js';
-
 import { useTheme } from '@react-navigation/native';
 
 export default function SearchScreen({ navigation }) {
+    const { colors } = useTheme();
     const [query, setQuery] = useState('');
     const [papers, setPapers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -29,9 +29,8 @@ export default function SearchScreen({ navigation }) {
     const [totalResults, setTotalResults] = useState(0);
     const [searchSource, setSearchSource] = useState('all'); // 'all', 'arxiv', 'crossref'
     const { isFavorite, addFavorite, getFavoriteByPaperId, removeFavorite } = useFavorites();
-    const { colors } = useTheme();
 
-    const executeSearch = useCallback(async (searchQuery) => {
+    const executeSearch = useCallback(async (searchQuery, isScanned = false) => {
         const trimmed = searchQuery.trim();
         if (!trimmed) return;
 
@@ -40,6 +39,10 @@ export default function SearchScreen({ navigation }) {
         setHasSearched(true);
         setQuery(trimmed);
 
+        // For scanned titles: fewer results (likely looking for 1 specific paper)
+        const arxivMax = isScanned ? 10 : 30;
+        const crossrefMax = isScanned ? 5 : 20;
+
         try {
             const allPapers = [];
             let total = 0;
@@ -47,7 +50,7 @@ export default function SearchScreen({ navigation }) {
             // arXiv search
             if (searchSource === 'all' || searchSource === 'arxiv') {
                 try {
-                    const arxivResult = await arxivService.quickSearch(trimmed, 0, 30);
+                    const arxivResult = await arxivService.quickSearch(trimmed, 0, arxivMax);
                     allPapers.push(...arxivResult.papers);
                     total += arxivResult.totalResults;
                 } catch (err) {
@@ -58,7 +61,7 @@ export default function SearchScreen({ navigation }) {
             // Crossref search
             if (searchSource === 'all' || searchSource === 'crossref') {
                 try {
-                    const crResult = await crossrefService.searchPapers(trimmed, { rows: 20 });
+                    const crResult = await crossrefService.searchPapers(trimmed, { rows: crossrefMax });
                     allPapers.push(...crResult.papers);
                     total += crResult.totalResults;
                 } catch (err) {
@@ -84,8 +87,8 @@ export default function SearchScreen({ navigation }) {
         }
     }, [searchSource]);
 
-    const handleSearch = useCallback(() => { executeSearch(query); }, [query, executeSearch]);
-    const handleScanSearch = useCallback((scannedText) => { executeSearch(scannedText); }, [executeSearch]);
+    const handleSearch = useCallback(() => { executeSearch(query, false); }, [query, executeSearch]);
+    const handleScanSearch = useCallback((scannedText) => { executeSearch(scannedText, true); }, [executeSearch]);
 
     const handlePaperPress = (paper) => {
         navigation.navigate('PaperDetails', { paperId: paper.id, source: paper.source, paper });
@@ -116,12 +119,12 @@ export default function SearchScreen({ navigation }) {
 
     return (
         <KeyboardAvoidingView
-            sstyle={[styles.container, { backgroundColor: colors.background }]}
+            style={[styles.container, { backgroundColor: colors.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
             {/* Search Bar */}
-            <View style={[styles.searchBar]}>
+            <View style={styles.searchBar}>
                 <View style={styles.inputContainer}>
                     <Ionicons name="search" size={20} color="#94a3b8" />
                     <TextInput
@@ -146,28 +149,30 @@ export default function SearchScreen({ navigation }) {
                 </TouchableOpacity>
             </View>
 
-            {/* Source Toggle */}
-            <View style={styles.sourceToggle}>
-                {[
-                    { key: 'all', label: 'All Sources' },
-                    { key: 'arxiv', label: 'arXiv' },
-                    { key: 'crossref', label: 'Crossref' },
-                ].map((src) => (
-                    <TouchableOpacity
-                        key={src.key}
-                        style={[styles.sourceTab, searchSource === src.key && styles.sourceTabActive]}
-                        onPress={() => setSearchSource(src.key)}
-                    >
-                        <Text style={[styles.sourceTabText, searchSource === src.key && styles.sourceTabTextActive]}>
-                            {src.label}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            {/* Source Toggle - hide while loading */}
+            {!isLoading && (
+                <View style={styles.sourceToggle}>
+                    {[
+                        { key: 'all', label: 'All Sources' },
+                        { key: 'arxiv', label: 'arXiv' },
+                        { key: 'crossref', label: 'Crossref' },
+                    ].map((src) => (
+                        <TouchableOpacity
+                            key={src.key}
+                            style={[styles.sourceTab, searchSource === src.key && styles.sourceTabActive]}
+                            onPress={() => setSearchSource(src.key)}
+                        >
+                            <Text style={[styles.sourceTabText, searchSource === src.key && styles.sourceTabTextActive]}>
+                                {src.label}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            )}
 
             {/* Results */}
             {isLoading ? (
-                <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
                     <ActivityIndicator size="large" color="#1B4F72" />
                     <Text style={styles.loadingText}>Searching...</Text>
                 </View>

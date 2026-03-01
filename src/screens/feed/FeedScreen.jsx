@@ -55,7 +55,7 @@ export default function FeedScreen({ navigation }) {
                 const src = filter.source || 'arxiv';
                 const keywords = (filter.keywords || []).join(' ');
 
-                console.log(`   Processing filter "${filter.name}" source=${src} max=${maxResults}`);
+                console.log(`Processing filter "${filter.name}" source=${src} max=${maxResults}`);
 
                 // arXiv
                 if (src === 'arxiv' || src === 'both') {
@@ -138,7 +138,11 @@ export default function FeedScreen({ navigation }) {
     );
 
     if (isLoading) {
-        return <View style={[styles.centerContainer, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color="#1B4F72" /><Text style={styles.loadingText}>Loading papers...</Text></View>;
+        return (
+            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+                <ActivityIndicator size="large" color="#1B4F72" />
+                <Text style={styles.loadingText}>Loading papers...</Text>
+            </View>);
     }
 
     if (error) {
