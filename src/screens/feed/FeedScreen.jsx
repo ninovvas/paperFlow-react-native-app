@@ -22,9 +22,17 @@ export default function FeedScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState(null);
-    const [lastFetchedFilterCount, setLastFetchedFilterCount] = useState(-1);
+    const [lastFilterHash, setLastFilterHash] = useState('');
 
     const activeFilters = filters.filter((f) => f.isActive);
+
+    // Create a hash of active filter content to detect ANY changes (edits, additions, deletions, toggle)
+    const currentFilterHash = JSON.stringify(
+        activeFilters.map(f => ({
+            id: f.id, name: f.name, keywords: f.keywords, categories: f.categories,
+            source: f.source, dateFrom: f.dateFrom, dateUntil: f.dateUntil, maxResults: f.maxResults,
+        }))
+    );
 
     const fetchPapers = useCallback(async (showLoader = true) => {
         try {
@@ -38,7 +46,7 @@ export default function FeedScreen({ navigation }) {
                 // New user or no filters: show empty state
                 console.log('Feed: No active filters - showing empty state');
                 setPapers([]);
-                setLastFetchedFilterCount(0);
+                setLastFilterHash(currentFilterHash);
                 return;
             }
 
@@ -81,7 +89,7 @@ export default function FeedScreen({ navigation }) {
 
             console.log(`Feed: Got ${unique.length} unique papers`);
             setPapers(unique);
-            setLastFetchedFilterCount(activeFilters.length);
+            setLastFilterHash(currentFilterHash);
         } catch (err) {
             console.error('Feed fetch error:', err);
             setError('Failed to load papers. Please check your connection and try again.');
@@ -93,12 +101,13 @@ export default function FeedScreen({ navigation }) {
 
     useEffect(() => { fetchPapers(); }, []);
 
+    // Auto-refresh when returning to feed tab if filters changed (edited, added, toggled, deleted)
     useEffect(() => {
-        if (isFocused && lastFetchedFilterCount >= 0 && lastFetchedFilterCount !== activeFilters.length) {
-            const timer = setTimeout(() => fetchPapers(), 2000);
-            return () => clearTimeout(timer);
+        if (isFocused && lastFilterHash && currentFilterHash !== lastFilterHash) {
+            console.log('Feed: Filters changed, auto-refreshing...');
+            fetchPapers();
         }
-    }, [isFocused, activeFilters.length]);
+    }, [isFocused, currentFilterHash]);
 
     const handleRefresh = () => { setIsRefreshing(true); fetchPapers(false); };
 
@@ -129,10 +138,7 @@ export default function FeedScreen({ navigation }) {
     );
 
     if (isLoading) {
-        return(<View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
-            <ActivityIndicator size="large" color="#1B4F72" />
-            <Text style={styles.loadingText}>Loading papers...</Text>
-            </View>);
+        return <View style={[styles.centerContainer, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color="#1B4F72" /><Text style={styles.loadingText}>Loading papers...</Text></View>;
     }
 
     if (error) {
