@@ -111,10 +111,11 @@ const styles = StyleSheet.create({
         elevation: 2,
         flexDirection: 'row',
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'transparent',
     },
     containerBookmarked: {
         backgroundColor: '#FEF9E7',
-        borderWidth: 1,
         borderColor: '#F9E79F',
     },
     sourceBadge: {
