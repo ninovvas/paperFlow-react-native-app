@@ -47,7 +47,7 @@ export default function FeedScreen({ navigation }) {
                 const src = filter.source || 'arxiv';
                 const keywords = (filter.keywords || []).join(' ');
 
-                console.log(`Processing filter "${filter.name}" source=${src} max=${maxResults}`);
+                console.log(`   Processing filter "${filter.name}" source=${src} max=${maxResults}`);
 
                 // arXiv
                 if (src === 'arxiv' || src === 'both') {
@@ -129,10 +129,9 @@ export default function FeedScreen({ navigation }) {
     );
 
     if (isLoading) {
-        return (
-            <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
-                <ActivityIndicator size="large" color="#1B4F72" />
-                <Text style={styles.loadingText}>Loading papers...</Text>
+        return(<View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+            <ActivityIndicator size="large" color="#1B4F72" />
+            <Text style={styles.loadingText}>Loading papers...</Text>
             </View>);
     }
 
@@ -155,7 +154,12 @@ export default function FeedScreen({ navigation }) {
                 contentContainerStyle={papers.length === 0 ? styles.emptyList : styles.list}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor="#1B4F72" colors={['#1B4F72']} />}
                 ListEmptyComponent={
-                    filters.length > 0 && activeFilters.length === 0 ? (
+                    filters.length === 0 ? (
+                        <EmptyState icon="newspaper-outline" title="No papers yet"
+                            message="Create your first filter to start receiving personalized paper recommendations from arXiv and Crossref."
+                            actionTitle="Create Filter"
+                            onAction={() => navigation.navigate('FiltersTab', { screen: 'CreateFilter' })} />
+                    ) : activeFilters.length === 0 ? (
                         <View style={styles.inactiveInfo}>
                             <Ionicons name="filter-outline" size={48} color="#94a3b8" />
                             <Text style={styles.inactiveTitle}>No active filters</Text>
@@ -181,10 +185,30 @@ export default function FeedScreen({ navigation }) {
                             </View>
                         </View>
                     ) : (
-                        <EmptyState icon="newspaper-outline" title="No papers yet"
-                            message="Create your first filter to start receiving personalized paper recommendations from arXiv and Crossref."
-                            actionTitle="Create Filter"
-                            onAction={() => navigation.navigate('FiltersTab', { screen: 'CreateFilter' })} />
+                        <View style={styles.inactiveInfo}>
+                            <Ionicons name="search-outline" size={48} color="#94a3b8" />
+                            <Text style={styles.inactiveTitle}>No papers found</Text>
+                            <Text style={styles.inactiveMessage}>
+                                Your {activeFilters.length} active filter{activeFilters.length !== 1 ? 's' : ''} didn't match any papers.
+                                Try editing your filter keywords, categories, or date range.
+                            </Text>
+                            <View style={styles.inactiveButtons}>
+                                <TouchableOpacity
+                                    style={styles.activateButton}
+                                    onPress={() => navigation.navigate('FiltersTab', { screen: 'FilterList' })}
+                                >
+                                    <Ionicons name="create-outline" size={18} color="#1B4F72" />
+                                    <Text style={styles.activateText}>Edit Filters</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.createButton}
+                                    onPress={() => navigation.navigate('FiltersTab', { screen: 'CreateFilter' })}
+                                >
+                                    <Ionicons name="add" size={18} color="#fff" />
+                                    <Text style={styles.createText}>New Filter</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     )
                 }
                 ListHeaderComponent={
