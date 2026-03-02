@@ -40,15 +40,14 @@ React Native Course Project
 
 3. **Start the backend server:**
 
-[https://github.com/ninovvas/paperFlow-react-native-api](paperFlow-react-native-api)
 
-Checkout the project and run the command:
+Checkout the project [paperFlow-react-native-api](https://github.com/ninovvas/paperFlow-react-native-api) and run the command:
 
    ```bash
    npm run dev
    ```
 
-Link of the hosted backend: [https://paperflow-react-native-api.onrender.com](paperFlow-react-native-api)
+Link of the hosted backend: [Render-paperFlow-react-native-api](https://paperflow-react-native-api.onrender.com)
 
 4. **Configure the API URL:**
    Open `src/api/api.js` and set `BASE_URL` to your computer's local IP address:
