@@ -2,7 +2,7 @@ import { arxivApi } from "./api.js";
 import { parseArxivResponse } from "../utils/xmlParser.js";
 
 // arXiv rate limit: they require at least 3 seconds between calls
-// We use 4 seconds to be safe and avoid 429 errors
+// Use 4 seconds to be safe and avoid 429 errors
 let lastCallTimestamp = 0;
 const RATE_LIMIT_MS = 4000;
 const MAX_RETRIES = 2;
@@ -167,8 +167,7 @@ export async function fetchFeedPapers(filters, maxResults = 25) {
                 sortOrder: 'descending',
             });
 
-            console.log(`
-                Got ${papers.length} papers before filtering`);
+            console.log(`Got ${papers.length} papers before filtering`);
 
             // ── Client-side category filter ──
             // arXiv search with cat: is a hint, not strict enforcement
@@ -220,24 +219,39 @@ export async function fetchFeedPapers(filters, maxResults = 25) {
 
 /**
  * Quick search by simple keyword string (for Search tab)
- * Uses ti: (title) + all: (all fields) for better relevance
+ * Always uses all: (all fields) for maximum tolerance of OCR errors and partial matches
+ * sortBy: relevance ensures best matches appear first regardless of date
  */
 export async function quickSearch(keyword, start = 0, maxResults = 25) {
     const trimmed = keyword.trim();
-
-    // If query looks like a full title (4+ words), search in title field for precision
-    const words = trimmed.split(/\s+/);
-    let query;
-
-    if (words.length >= 4) {
-        // Long query = likely a paper title → search in title for exact match
-        const encoded = trimmed.replace(/\s+/g, '+');
-        query = `ti:${encoded}`;
-    } else {
-        // Short query = keywords → search all fields
-        const encoded = trimmed.replace(/\s+/g, '+');
-        query = `all:${encoded}`;
-    }
+    const encoded = trimmed.replace(/\s+/g, '+');
+    const query = `all:${encoded}`;
 
     return searchPapers(query, { start, maxResults, sortBy: 'relevance', sortOrder: 'descending' });
+}
+
+/**
+ * Smart search for scanned text (OCR often has errors/truncation)
+ * Extracts key meaningful words, drops short/garbled ones
+ */
+export async function scanSearch(scannedText, maxResults = 25) {
+    // Common stop words to remove
+    const stopWords = new Set(['the', 'a', 'an', 'of', 'for', 'and', 'or', 'in', 'on', 'to', 'with', 'by', 'from', 'using', 'via', 'is', 'are', 'was']);
+
+    // Extract meaningful keywords: 3+ chars, not stop words, no trailing fragments
+    const words = scannedText.trim().split(/\s+/);
+    const keywords = words
+        .map(w => w.replace(/[^a-zA-Z0-9-]/g, '')) // remove punctuation
+        .filter(w => w.length >= 3 && !stopWords.has(w.toLowerCase()));
+
+    if (keywords.length === 0) {
+        // Fallback: use the raw text
+        return quickSearch(scannedText, 0, maxResults);
+    }
+
+    // Use the meaningful keywords for a broader search
+    const query = keywords.map(k => `all:${k}`).join('+AND+');
+    console.log(`Scan search (${keywords.length} keywords): ${query}`);
+
+    return searchPapers(query, { maxResults, sortBy: 'relevance', sortOrder: 'descending' });
 }

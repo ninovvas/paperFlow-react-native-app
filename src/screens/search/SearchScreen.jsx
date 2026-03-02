@@ -34,14 +34,15 @@ export default function SearchScreen({ navigation }) {
         const trimmed = searchQuery.trim();
         if (!trimmed) return;
 
+        console.log(`Search: "${trimmed}" scanned=${isScanned} source=${searchSource}`);
         Keyboard.dismiss();
         setIsLoading(true);
         setHasSearched(true);
         setQuery(trimmed);
 
-        // For scanned titles: fewer results (likely looking for 1 specific paper)
-        const arxivMax = isScanned ? 10 : 30;
-        const crossrefMax = isScanned ? 5 : 20;
+        // Scanned titles need enough results to find older papers (sorted by relevance)
+        const arxivMax = isScanned ? 25 : 30;
+        const crossrefMax = isScanned ? 10 : 20;
 
         try {
             const allPapers = [];
@@ -50,7 +51,10 @@ export default function SearchScreen({ navigation }) {
             // arXiv search
             if (searchSource === 'all' || searchSource === 'arxiv') {
                 try {
-                    const arxivResult = await arxivService.quickSearch(trimmed, 0, arxivMax);
+                    // Use scanSearch for OCR text (handles errors/truncation better)
+                    const arxivResult = isScanned
+                        ? await arxivService.scanSearch(trimmed, arxivMax)
+                        : await arxivService.quickSearch(trimmed, 0, arxivMax);
                     allPapers.push(...arxivResult.papers);
                     total += arxivResult.totalResults;
                 } catch (err) {

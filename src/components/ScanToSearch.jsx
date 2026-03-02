@@ -16,7 +16,7 @@ import {
 } from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import Button from './Button';
-import { spaceImageApi } from "./../api/api";
+
 
 
 
@@ -65,7 +65,7 @@ export default function ScanToSearch({ onSearch, style = {} }) {
                 encoding: FileSystem.EncodingType.Base64,
             });
 
-            console.log('📸 Sending image to OCR.space...');
+            console.log('Sending image to OCR.space...');
 
             // Send to OCR.space free API
             const formData = new FormData();
@@ -95,12 +95,12 @@ export default function ScanToSearch({ onSearch, style = {} }) {
                 if (text.length > 0) {
                     setExtractedText(text);
                     setOcrStatus('success');
-                    console.log(`📸 OCR extracted: "${text}"`);
+                    console.log(`OCR extracted: "${text}"`);
                 } else {
                     setOcrStatus('failed');
                 }
             } else {
-                console.log('📸 OCR: No text found');
+                console.log('OCR: No text found');
                 setOcrStatus('failed');
             }
         } catch (err) {
