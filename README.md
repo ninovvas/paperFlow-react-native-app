@@ -2,7 +2,7 @@
 React Native Course Project
 
 ## Link to APK
-*TBD*
+[APK File](https://drive.google.com/file/d/1z97vHD2cya-KZezx4dtC3MRGuJKdHKMG/view?usp=sharing)
 
 ## Walkthrough Tutorial
 
