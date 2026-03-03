@@ -2,12 +2,13 @@
 React Native Course Project
 
 ## Link to APK
-[APK File](https://drive.google.com/file/d/1z97vHD2cya-KZezx4dtC3MRGuJKdHKMG/view?usp=sharing)
+[APK File](https://drive.google.com/file/d/1U_-gaPT1Vz4jr_xUqw9ypGnHWRagbQ9b/view?usp=sharing)
 
 ## Walkthrough Tutorial
 
 1. Open the app - Welcome screen shows features overview - Tap "Get Started"
-2. Login with demo account: `demo@paperflow.com` / `Demo123` (or create your own account)
+2. Login with demo account: `demo@paperflow.com` / `Demo123` (or create your own account). 
+- **REMARK:** If the login with the demo account is not working from the firt time, please try again until the backend server wake up. This issue is only after moving the server to the Render.
 3. Navigate to **Filters** tab - Create a filter with keywords (e.g., "reinforcement learning") and select arXiv categories
 4. Switch to **Feed** tab - Papers matching your filter appear automatically
 5. Tap any paper - View full details (title, authors, abstract, categories, links)

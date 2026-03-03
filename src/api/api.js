@@ -57,7 +57,7 @@ api.interceptors.response.use(
 
 // Axios instance for arXiv API (returns XML)
 export const arxivApi = axios.create({
-    baseURL: process.env.EXPO_PUBLIC_ARXIV_API_URL || 'http://export.arxiv.org/api',
+    baseURL: process.env.EXPO_PUBLIC_ARXIV_API_URL || 'https://export.arxiv.org/api',
     timeout: 15000,
 });
 
