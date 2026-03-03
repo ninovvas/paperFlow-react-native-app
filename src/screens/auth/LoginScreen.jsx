@@ -65,11 +65,6 @@ const LoginScreen = ({ navigation }) => {
                         </View>
                         <Text style={styles.title}>PaperFlow</Text>
                         <Text style={styles.subtitle}>Sign in to your account</Text>
-                        <View style={{ backgroundColor: AUTH_MODE === 'firebase' ? '#FEF3C7' : '#D6EAF8', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, marginTop: 8 }}>
-                            <Text style={{ fontSize: 11, fontWeight: '600', color: AUTH_MODE === 'firebase' ? '#92400E' : '#1B4F72' }}>
-                                {AUTH_MODE === 'firebase' ? 'Firebase Auth' : '🗄️ json-server Auth'}
-                            </Text>
-                        </View>
                     </View>
 
                     {error && (
